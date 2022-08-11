@@ -1,0 +1,22 @@
+﻿@model Vidly.Models.Costumer
+@{
+    ViewBag.Title = "GetCostumer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .member {
+        font-size: 20px;
+        padding-bottom: 10px;
+    }
+</style>
+<h2>@Model.Name</h2>
+<ul>
+    <li class="member">Membership Type: @Model.MembershipType.Name</li>
+    @if (Model.BirthDate.HasValue==true)
+    {
+        <li class="member">
+            Birthdate: @Model.BirthDate.Value.ToString("MM/dd/yyyy")
+        </li>
+    }
+</ul>
+

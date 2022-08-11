@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Vidly.Models.Movie>
+
+@{
+    ViewBag.Title = "AllMovies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0px;
+    }
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    thead {
+        font-size: 25px;
+        padding: 20px;
+    }
+
+    td, th {
+        border: 1px solid #808080;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #808080;
+    }
+
+    .white {
+        color: white;
+    }
+
+    .buton {
+        color: white;
+        font-weight: bold;
+        background: white;
+        color: black;
+        border: 1.5px solid black;
+    }
+
+    #buton{
+        margin-top:20px;
+        margin-bottom:20px;
+    }
+</style>
+
+<h2>All Movies</h2>
+
+    <table id="movies" class="table table-bordered table-hover">
+        <thead>
+        <td width="60%">Movies</td>
+        <td width="40%">Genre</td>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var table = $("#movies").DataTable({
+                ajax: {
+                    url: "/api/movies",
+                    dataSrc: ""
+                },
+                columns: [{
+                    data: "name"
+                },
+                {
+                    data: "genre.name"
+                }
+                ]
+            });
+        });
+    </script>    
+}
