@@ -6,13 +6,12 @@ using System.Web;
 
 namespace Vidly.NHibernateModels
 {
-    public class CostumerHibernate
+    public class CostumersHibernate
     {
         public virtual int Id { get; set; }
         public virtual string Name { get; set; }
         public virtual bool IsSubscribedToNewsletter { get; set; }
-        public virtual MembershipType MembershipType { get; set; }
-        public virtual byte MembershipTypeId { get; set; }
+        public virtual MembershipTypesHibernate MembershipTypeHibernate { get; set; }
         public virtual DateTime? BirthDate { get; set; }
     }
 }

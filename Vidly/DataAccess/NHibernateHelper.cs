@@ -25,9 +25,9 @@ namespace Vidly.DataAccess
             _sessionFactory = Fluently.Configure().Database(MsSqlConfiguration.MsSql2008
                 .ConnectionString("Data Source=andreibo-mbl;Initial Catalog=VidlyStore;Integrated Security=True;MultipleActiveResultSets=True;Application Name=EntityFramework"))
                 .Mappings(m => m.FluentMappings
-                .AddFromAssemblyOf<CostumerHibernate>())
+                .AddFromAssemblyOf<CostumersHibernate>())
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
-                .Create(true, true))
+                .Create(false, false))
                 .BuildSessionFactory();
         }
 
@@ -38,14 +38,6 @@ namespace Vidly.DataAccess
         public static void CreateSession()
         {
             CurrentSessionContext.Bind(OpenSession());
-        }
-
-        public static void CloseSession()
-        {
-            if (CurrentSessionContext.HasBind(SessionFactory))
-            {
-                CurrentSessionContext.Unbind(SessionFactory).Dispose();
-            }
         }
 
         public ISession GetCurrentSession()

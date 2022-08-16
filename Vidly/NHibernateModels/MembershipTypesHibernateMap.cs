@@ -6,16 +6,16 @@ using System.Web;
 
 namespace Vidly.NHibernateModels
 {
-    public class MembershipTypeHibernateMap : ClassMap<MembershipTypeHibernate>
+    public class MembershipTypesHibernateMap : ClassMap<MembershipTypesHibernate>
     {
-        public MembershipTypeHibernateMap()
+        public MembershipTypesHibernateMap()
         {
             Id(x => x.Id);
             Map(x => x.Name);
             Map(x => x.DurationInMonth);
             Map(x => x.SignUpFee);
             Map(x => x.Discount);
-            Table("MembershipType");
+            Table("MembershipTypesHibernate");
         }
     }
 }
