@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Vidly.DataAccess;
+using Vidly.Models;
 using Vidly.NHibernateModels;
 using Vidly.ViewModelHibernate;
 
@@ -23,8 +24,15 @@ namespace Vidly.Controllers
 
         public ActionResult AllCostumersHibernate()
         {
-            var allCostumers = session.CreateCriteria<CostumersHibernate>().List<CostumersHibernate>();
-            return View(allCostumers);
+            bool CanManage = false;
+            if (User.IsInRole(RoleName.CanManagerMovies))
+                CanManage = true;
+            var viewModel = new CostumerHibernateFormViewModel()
+            {
+                Costumers = session.CreateCriteria<CostumersHibernate>().List<CostumersHibernate>().ToList(),
+                CanManageCostumers = CanManage
+            };
+            return View(viewModel);
         }
 
         public ActionResult Edit(int id)
@@ -39,7 +47,9 @@ namespace Vidly.Controllers
                 MembershipTypes = session.CreateCriteria<MembershipTypesHibernate>().List<MembershipTypesHibernate>().ToList(),
                 Costumer = costumer
             };
-            return View("CostumerHibernateForm", viewModel);
+            if (User.IsInRole(RoleName.CanManagerMovies))
+                return View("CostumerHibernateForm", viewModel);
+            return View("CostumerHibernateRForm", viewModel.Costumer);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

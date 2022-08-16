@@ -674,6 +674,7 @@
     <Content Include="Views\Rentals\New.cshtml" />
     <Content Include="Views\CostumersNHibernate\AllCostumersHibernate.cshtml" />
     <Content Include="Views\CostumersNHibernate\CostumerHibernateForm.cshtml" />
+    <Content Include="Views\CostumersNHibernate\CostumerHibernateRForm.cshtml" />
     <None Include="Web.Testing.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

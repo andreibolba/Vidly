@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Vidly.NHibernateModels.CostumersHibernate>
+﻿@model  Vidly.ViewModelHibernate.CostumerHibernateFormViewModel
 
 @{
     ViewBag.Title = "AllCostumersHibernate";
@@ -59,9 +59,12 @@
 </style>
 
 <h2>All Costumers(Hibernate)</h2>
-<button class="btn btn-primary " id="buton">
-    @Html.ActionLink("Add Costumer", "Edit", "CostumersNHibernate", new { id = 0 }, new { @class = "white" })
-</button>
+@if (Model.CanManageCostumers)
+{
+    <button class="btn btn-primary " id="buton">
+        @Html.ActionLink("Add Costumer", "Edit", "CostumersNHibernate", new { id = 0 }, new { @class = "white" })
+    </button>
+}
 <table>
     <thead>
     <th width="40%">Name</th>
@@ -69,7 +72,7 @@
     <th width="30%">BirthDate</th>
     </thead>
     <tbody>
-        @foreach (var c in Model)
+        @foreach (var c in Model.Costumers)
         {
             <tr>
                 <td>
@@ -80,11 +83,11 @@
                 </td>
                 <td>
                     @if (c.BirthDate.HasValue == true)
-                    { <p>@c.BirthDate.Value.ToString("MM/dd/yyyy")</p>}
-                    else
-                    {
-                        <p>No birthdate</p>
-                    }
+                    {<p>@c.BirthDate.Value.ToString("MM/dd/yyyy")</p>}
+                else
+                {
+                    <p>No birthdate</p>
+                }
                 </td>
             </tr>
         }
