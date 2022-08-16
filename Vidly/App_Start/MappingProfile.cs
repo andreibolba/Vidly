@@ -10,16 +10,16 @@ namespace Vidly.App_Start
     {
         public MappingProfile()
         {
-            Mapper.CreateMap<Models.EntityFramework.Costumer, Dtos.CostumerDto>();
-            Mapper.CreateMap<Models.EntityFramework.Movie, Dtos.MovieDto>();
-            Mapper.CreateMap<Models.EntityFramework.MembershipType, Dtos.MembershipTypeDto>();
-            Mapper.CreateMap<Models.EntityFramework.Genre, Dtos.GenreDto>();
+            Mapper.CreateMap<Models.Costumer, Dtos.CostumerDto>();
+            Mapper.CreateMap<Models.Movie, Dtos.MovieDto>();
+            Mapper.CreateMap<Models.MembershipType, Dtos.MembershipTypeDto>();
+            Mapper.CreateMap<Models.Genre, Dtos.GenreDto>();
             //Mapper.CreateMap<Models.NewRental, Dtos.NewRentalDto>();
 
-            Mapper.CreateMap<Dtos.CostumerDto, Models.EntityFramework.Costumer>().ForMember(m => m.Id, opt => opt.Ignore());
-            Mapper.CreateMap<Dtos.MovieDto, Models.EntityFramework.Movie>().ForMember(m => m.Id, opt => opt.Ignore());
-            Mapper.CreateMap<Dtos.GenreDto, Models.EntityFramework.Genre>().ForMember(m => m.Id, opt => opt.Ignore());
-            Mapper.CreateMap<Dtos.MovieDto, Models.EntityFramework.Movie>().ForMember(m => m.Id, opt => opt.Ignore());
+            Mapper.CreateMap<Dtos.CostumerDto, Models.Costumer>().ForMember(m => m.Id, opt => opt.Ignore());
+            Mapper.CreateMap<Dtos.MovieDto, Models.Movie>().ForMember(m => m.Id, opt => opt.Ignore());
+            Mapper.CreateMap<Dtos.GenreDto, Models.Genre>().ForMember(m => m.Id, opt => opt.Ignore());
+            Mapper.CreateMap<Dtos.MovieDto, Models.Movie>().ForMember(m => m.Id, opt => opt.Ignore());
             //Mapper.CreateMap<Dtos.NewRentalDto, Models.NewRental>().ForMember(m => m.Id, opt => opt.Ignore());
         }
     }

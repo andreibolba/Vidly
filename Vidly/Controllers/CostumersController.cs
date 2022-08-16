@@ -9,7 +9,7 @@ using Vidly.ViewModel;
 using Vidly.Models.IdentityModels;
 using System.Runtime.Caching;
 
-namespace Vidly.Controllers.EntityFramework
+namespace Vidly.Controllers
 {
     public class CostumersController : Controller
     {
@@ -58,13 +58,13 @@ namespace Vidly.Controllers.EntityFramework
             var viewModel = new CostumerFormViewModel()
             {
                 MembershipTypes = _context.MembershipTypes.ToList(),
-                Costumer = new Models.EntityFramework.Costumer()
+                Costumer = new Models.Costumer()
             };
             return View("CostumerForm", viewModel);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Save(Models.EntityFramework.Costumer costumer)
+        public ActionResult Save(Models.Costumer costumer)
         {
             if (!ModelState.IsValid)
             {
@@ -96,7 +96,7 @@ namespace Vidly.Controllers.EntityFramework
         {
             var costumer = _context.Customers.SingleOrDefault(c => c.Id == id);
             if (costumer == null)
-                costumer = new Models.EntityFramework.Costumer();
+                costumer = new Models.Costumer();
             var viewModel = new CostumerFormViewModel()
             {
                 MembershipTypes = _context.MembershipTypes.ToList(),

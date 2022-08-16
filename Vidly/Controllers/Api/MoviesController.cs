@@ -9,7 +9,6 @@ using Vidly.Dtos;
 using Vidly.Models;
 using System.Data.Entity;
 using Vidly.Models.IdentityModels;
-using Vidly.Models.EntityFramework;
 
 namespace Vidly.Controllers.Api
 {

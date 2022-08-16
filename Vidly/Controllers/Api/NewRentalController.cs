@@ -24,12 +24,12 @@ namespace Vidly.Controllers.Api
         [HttpPost]
         public IHttpActionResult CreateRental(NewRentalDto newRentalDto)
         {
-            Models.EntityFramework.Costumer costumer = _context.Customers.Single(c => c.Id == newRentalDto.CostumerId);
+            Models.Costumer costumer = _context.Customers.Single(c => c.Id == newRentalDto.CostumerId);
             foreach(int id in newRentalDto.MoviesId)
             {
-                Models.EntityFramework.Movie movie= _context.Movies.ToList().SingleOrDefault(m=>m.Id==id);
+                Models.Movie movie= _context.Movies.ToList().SingleOrDefault(m=>m.Id==id);
                 movie.NumberAvailable--;
-                Models.EntityFramework.Rental rental = new Models.EntityFramework.Rental()
+                Models.Rental rental = new Models.Rental()
                 {
                     Costumer = costumer,
                     Movie = movie,
