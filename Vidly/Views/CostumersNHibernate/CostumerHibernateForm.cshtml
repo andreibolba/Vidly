@@ -11,6 +11,10 @@
         color: red;
     }
 
+    .white{
+        color: white;
+    }
+
     .input-validation-error {
         border: 2px solid red;
     }
@@ -51,6 +55,10 @@ else
     @Html.HiddenFor(m => m.Costumer.Id);
     @Html.AntiForgeryToken()
     <button type="submit" class="btn btn-primary">Submit</button>
+
+    <button class="btn btn-primary " id="buton">
+        @Html.ActionLink("Delete", "Delete", "CostumersNHibernate", new { id = Model.Costumer.Id }, new { @class = "white" })
+    </button>
 }
 
 @section scripts{

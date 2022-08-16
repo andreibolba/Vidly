@@ -66,5 +66,14 @@ namespace Vidly.Controllers
             transaction.Commit();
             return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
         }
+
+        public ActionResult Delete(int id)
+        {
+            var costumer = session.Get<CostumersHibernate>(id);
+            session.Delete(costumer);
+
+            transaction.Commit();
+            return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace Vidly.NHibernateModels
             Map(x => x.Name);
             Map(x => x.IsSubscribedToNewsletter);
             Map(x => x.BirthDate);
-            References(x => x.MembershipTypeHibernate).Cascade.All();
+            References(x => x.MembershipTypeHibernate);
             Table("CostumersHibernate");
         }
     }
