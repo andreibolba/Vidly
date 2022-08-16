@@ -8,7 +8,7 @@ namespace Vidly.ViewModel
 {
     public class RandomMovieViewModel
     {
-        public Models.Movie Movie { get; set; }
-        public List<Models.Costumer> Costumers { get; set; }
+        public Models.EntityFramework.Movie Movie { get; set; }
+        public List<Models.EntityFramework.Costumer> Costumers { get; set; }
     }
 }

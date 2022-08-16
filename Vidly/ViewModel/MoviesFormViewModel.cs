@@ -8,7 +8,7 @@ namespace Vidly.ViewModel
 {
     public class MoviesFormViewModel
     {
-        public List<Models.Genre> Genres { get; set; }
+        public List<Models.EntityFramework.Genre> Genres { get; set; }
         public int? Id { get; set; }
         [Required]
         public string Name { get; set; }
@@ -28,7 +28,7 @@ namespace Vidly.ViewModel
             Id = 0;
         }
 
-        public MoviesFormViewModel(List<Models.Genre> Genres,Models.Movie movie)
+        public MoviesFormViewModel(List<Models.EntityFramework.Genre> Genres,Models.EntityFramework.Movie movie)
         {
             this.Genres = Genres;
             Id = movie.Id;
