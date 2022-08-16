@@ -39,6 +39,11 @@
         color: white;
     }
 
+    .link {
+        color: blue;
+        text-decoration: underline;
+    }
+
     .buton {
         color: white;
         font-weight: bold;
@@ -61,20 +66,25 @@
     <thead>
     <th width="40%">Name</th>
     <th width="30%">Membership name</th>
-    <th width="20%">Delete</th>
+    <th width="30%">BirthDate</th>
     </thead>
     <tbody>
         @foreach (var c in Model)
         {
             <tr>
                 <td>
-                    @c.Name
+                    @Html.ActionLink(c.Name, "Edit", "CostumersNHibernate", new { id = c.Id }, new { @class = "link" })
                 </td>
                 <td>
                     @c.MembershipTypeHibernate.Name
                 </td>
                 <td>
-                    delete
+                    @if (c.BirthDate.HasValue == true)
+                    { <p>@c.BirthDate.Value.ToString("MM/dd/yyyy")</p>}
+                    else
+                    {
+                        <p>No birthdate</p>
+                    }
                 </td>
             </tr>
         }

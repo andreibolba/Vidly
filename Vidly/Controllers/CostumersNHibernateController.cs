@@ -32,6 +32,8 @@ namespace Vidly.Controllers
             var costumer = session.Get<CostumersHibernate>(id);
             if (costumer == null)
                 costumer = new NHibernateModels.CostumersHibernate();
+            else
+                costumer.MemberShipId = costumer.MembershipTypeHibernate.Id;
             var viewModel = new CostumerHibernateFormViewModel()
             {
                 MembershipTypes = session.CreateCriteria<MembershipTypesHibernate>().List<MembershipTypesHibernate>().ToList(),
@@ -52,9 +54,9 @@ namespace Vidly.Controllers
                 };
                 return View("CostumerHibernateForm", viewModel);
             }
+            costumer.MembershipTypeHibernate = session.Get<MembershipTypesHibernate>(costumer.MemberShipId);
             if (costumer.Id == 0)
             {
-                costumer.MembershipTypeHibernate = session.Get<MembershipTypesHibernate>(costumer.MemberShipId);
                 session.Save(costumer);
             }
             else
