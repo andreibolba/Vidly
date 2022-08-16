@@ -1,0 +1,58 @@
+﻿@model Vidly.ViewModelHibernate.CostumerHibernateFormViewModel
+@{
+    ViewBag.Title = "CostumerHibernateForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+
+    .field-validation-error {
+        color: red;
+    }
+
+    .input-validation-error {
+        border: 2px solid red;
+    }
+</style>
+
+@if (Model.Costumer.Id == 0)
+{
+    <h2>New Costumer</h2>
+}
+else
+{
+    <h2>Edit Costumer</h2>
+}
+
+@using (Html.BeginForm("Save", "CostumersNHibernate"))
+{
+    /*@Html.ValidationSummary();->for display error above*/
+    <div class="form-group">
+        @Html.LabelFor(m => m.Costumer.Name)
+        @Html.TextBoxFor(m => m.Costumer.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Costumer.Name)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Costumer.MemberShipId)
+        @Html.DropDownListFor(m => m.Costumer.MemberShipId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Select a membership Type", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Costumer.MemberShipId)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Costumer.BirthDate)
+        @Html.TextBoxFor(m => m.Costumer.BirthDate, "{0:d MMM yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Costumer.BirthDate)
+    </div>
+    <div class="checkbox">
+        <label>
+            @Html.CheckBoxFor(m => m.Costumer.IsSubscribedToNewsletter) Subscribe to Newsletter
+        </label>
+    </div>
+    @Html.HiddenFor(m => m.Costumer.Id);
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-primary">Submit</button>
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}

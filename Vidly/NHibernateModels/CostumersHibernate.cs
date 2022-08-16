@@ -13,5 +13,6 @@ namespace Vidly.NHibernateModels
         public virtual bool IsSubscribedToNewsletter { get; set; }
         public virtual MembershipTypesHibernate MembershipTypeHibernate { get; set; }
         public virtual DateTime? BirthDate { get; set; }
+        public virtual int MemberShipId { get; set; }
     }
 }

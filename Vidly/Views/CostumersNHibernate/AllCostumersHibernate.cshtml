@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Vidly.NHibernateModels.CostumersHibernate>
+
+@{
+    ViewBag.Title = "AllCostumersHibernate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0px;
+    }
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    thead {
+        font-size: 25px;
+        padding: 20px;
+    }
+
+    td, th {
+        border: 1px solid #808080;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #808080;
+    }
+
+    .white {
+        color: white;
+    }
+
+    .buton {
+        color: white;
+        font-weight: bold;
+        background: white;
+        color: black;
+        border: 1.5px solid black;
+    }
+
+    #buton {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<h2>All Costumers(Hibernate)</h2>
+<button class="btn btn-primary " id="buton">
+    @Html.ActionLink("Add Costumer", "Edit", "CostumersNHibernate", new { id = 0 }, new { @class = "white" })
+</button>
+<table>
+    <thead>
+    <th width="40%">Name</th>
+    <th width="30%">Membership name</th>
+    <th width="20%">Delete</th>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>
+                    @c.Name
+                </td>
+                <td>
+                    @c.MembershipTypeHibernate.Name
+                </td>
+                <td>
+                    delete
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
