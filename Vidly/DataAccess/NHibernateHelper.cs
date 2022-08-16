@@ -1,13 +1,11 @@
 ﻿using NHibernate;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using NHibernate.Tool.hbm2ddl;
+using Vidly.Models.NHibernate;
+using NHibernate.Context;
 
-namespace Vidly.Models.NHibernate
+namespace Vidly.DataAccess
 {
     public class NHibernateHelper
     {
@@ -36,6 +34,27 @@ namespace Vidly.Models.NHibernate
         public static ISession OpenSession()
         {
             return SessionFactory.OpenSession();
+        }
+        public static void CreateSession()
+        {
+            CurrentSessionContext.Bind(OpenSession());
+        }
+
+        public static void CloseSession()
+        {
+            if (CurrentSessionContext.HasBind(SessionFactory))
+            {
+                CurrentSessionContext.Unbind(SessionFactory).Dispose();
+            }
+        }
+
+        public ISession GetCurrentSession()
+        {
+            if (!CurrentSessionContext.HasBind(SessionFactory))
+            {
+                CurrentSessionContext.Bind(SessionFactory.OpenSession());
+            }
+            return SessionFactory.GetCurrentSession();
         }
     }
 }

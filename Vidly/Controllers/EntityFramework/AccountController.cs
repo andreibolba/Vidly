@@ -12,7 +12,7 @@ using Microsoft.Owin.Security;
 using Vidly.Models;
 using Vidly.Models.IdentityModels;
 
-namespace Vidly.Controllers
+namespace Vidly.Controllers.EntityFramework
 {
     [Authorize]
     public class AccountController : Controller

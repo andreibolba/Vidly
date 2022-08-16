@@ -8,10 +8,34 @@ using Vidly.Models;
 using Vidly.ViewModel;
 using Vidly.Models.IdentityModels;
 using System.Runtime.Caching;
+using NHibernate;
+using Vidly.DataAccess;
 
-namespace Vidly.Controllers
+namespace Vidly.Controllers.EntityFramework
 {
     public class CostumersController : Controller
+    {
+        private readonly ISession session;
+        private readonly ITransaction trasaction;
+
+        public CostumersController()
+        {
+            session = NHibernateHelper.OpenSession();
+            trasaction = session.BeginTransaction();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            NHibernateHelper.CloseSession();
+        }
+
+        public ActionResult AllCostumers()
+        {
+            return View();
+        }
+    }
+
+    /*public class CostumersController : Controller
     {
         private ApplicationDbContext _context;
 
@@ -104,5 +128,5 @@ namespace Vidly.Controllers
             };
             return View("CostumerForm",viewModel);
         }
-    }
+    }*/
 }

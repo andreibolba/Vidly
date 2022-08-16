@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Vidly.Models;
 
-namespace Vidly.Controllers
+namespace Vidly.Controllers.EntityFramework
 {
     [Authorize]
     public class ManageController : Controller

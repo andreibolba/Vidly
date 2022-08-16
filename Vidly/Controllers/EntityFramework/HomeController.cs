@@ -5,7 +5,7 @@ using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Vidly.Controllers
+namespace Vidly.Controllers.EntityFramework
 {
     [AllowAnonymous]
     public class HomeController : Controller

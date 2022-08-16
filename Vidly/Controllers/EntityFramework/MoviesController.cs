@@ -8,7 +8,7 @@ using Vidly.Models;
 using Vidly.Models.IdentityModels;
 using Vidly.ViewModel;
 
-namespace Vidly.Controllers
+namespace Vidly.Controllers.EntityFramework
 {
     public class MoviesController : Controller
     {
