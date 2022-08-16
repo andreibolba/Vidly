@@ -10,9 +10,9 @@ namespace Vidly.Models.EntityFramework
     {
         public int Id { get; set; }
         [Required]
-        public Models.Costumer Costumer { get; set; }
+        public Models.EntityFramework.Costumer Costumer { get; set; }
         [Required]
-        public Models.Movie Movie { get; set; }
+        public Models.EntityFramework.Movie Movie { get; set; }
         public DateTime DateRented { get; set; }
         public DateTime? DateReturned { get; set; }
     }

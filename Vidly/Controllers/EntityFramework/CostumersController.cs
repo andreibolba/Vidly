@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Vidly.Models;
+using Vidly.Models.EntityFramework;
 using Vidly.ViewModel;
 using Vidly.Models.IdentityModels;
 using System.Runtime.Caching;
@@ -14,28 +14,6 @@ using Vidly.DataAccess;
 namespace Vidly.Controllers.EntityFramework
 {
     public class CostumersController : Controller
-    {
-        private readonly ISession session;
-        private readonly ITransaction trasaction;
-
-        public CostumersController()
-        {
-            session = NHibernateHelper.OpenSession();
-            trasaction = session.BeginTransaction();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            NHibernateHelper.CloseSession();
-        }
-
-        public ActionResult AllCostumers()
-        {
-            return View();
-        }
-    }
-
-    /*public class CostumersController : Controller
     {
         private ApplicationDbContext _context;
 
@@ -82,13 +60,13 @@ namespace Vidly.Controllers.EntityFramework
             var viewModel = new CostumerFormViewModel()
             {
                 MembershipTypes = _context.MembershipTypes.ToList(),
-                Costumer = new Models.Costumer()
+                Costumer = new Models.EntityFramework.Costumer()
             };
             return View("CostumerForm", viewModel);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Save(Models.Costumer costumer)
+        public ActionResult Save(Models.EntityFramework.Costumer costumer)
         {
             if (!ModelState.IsValid)
             {
@@ -120,7 +98,7 @@ namespace Vidly.Controllers.EntityFramework
         {
             var costumer = _context.Customers.SingleOrDefault(c => c.Id == id);
             if (costumer == null)
-                costumer = new Models.Costumer();
+                costumer = new Models.EntityFramework.Costumer();
             var viewModel = new CostumerFormViewModel()
             {
                 MembershipTypes = _context.MembershipTypes.ToList(),
@@ -128,5 +106,5 @@ namespace Vidly.Controllers.EntityFramework
             };
             return View("CostumerForm",viewModel);
         }
-    }*/
+    }
 }

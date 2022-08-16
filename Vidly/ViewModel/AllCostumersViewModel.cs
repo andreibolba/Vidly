@@ -7,6 +7,6 @@ namespace Vidly.ViewModel
 {
     public class AllCostumersViewModel
     {
-        public List<Models.Costumer> Costumers { get; set; }
+        public List<Models.EntityFramework.Costumer> Costumers { get; set; }
     }
 }

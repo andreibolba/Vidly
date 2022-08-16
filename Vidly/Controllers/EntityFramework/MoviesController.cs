@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Vidly.Models;
+using Vidly.Models.EntityFramework;
 using Vidly.Models.IdentityModels;
 using Vidly.ViewModel;
 
@@ -44,10 +45,10 @@ namespace Vidly.Controllers.EntityFramework
         {
             var movie = new Movie() { Name = "Shrek!" };
 
-            var costumers = new List<Models.Costumer>
+            var costumers = new List<Models.EntityFramework.Costumer>
             {
-                new Models.Costumer{Name="Andrei" },
-                new Models.Costumer{Name="Melania"}
+                new Models.EntityFramework.Costumer{Name="Andrei" },
+                new Models.EntityFramework.Costumer{Name="Melania"}
             };
 
             var viewModel = new RandomMovieViewModel
