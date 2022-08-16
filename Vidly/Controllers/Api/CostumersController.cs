@@ -32,7 +32,7 @@ namespace Vidly.Controllers.Api
 
             var costumerDtos= costumerQuey
                 .ToList()
-                .Select(Mapper.Map<Models.EntityFramework.Costumer,CostumerDto>);
+                .Select(Mapper.Map<Models.Costumer,CostumerDto>);
             return Ok(costumerDtos);
         }
         //Get/api/costumers/1
@@ -42,7 +42,7 @@ namespace Vidly.Controllers.Api
 
             if (costumer == null)
                 return NotFound();
-            return Ok(Mapper.Map<Models.EntityFramework.Costumer,CostumerDto>(costumer));
+            return Ok(Mapper.Map<Models.Costumer,CostumerDto>(costumer));
         }
         //POST/api/costumers
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Vidly.Controllers.Api
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            var costumer = Mapper.Map<CostumerDto, Models.EntityFramework.Costumer>(costumerDto);
+            var costumer = Mapper.Map<CostumerDto, Models.Costumer>(costumerDto);
             _context.Customers.Add(costumer);
             _context.SaveChanges();
 
@@ -67,7 +67,7 @@ namespace Vidly.Controllers.Api
             var costumerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
             if (costumerInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
-            Mapper.Map<CostumerDto, Models.EntityFramework.Costumer>(costumerDto, costumerInDb);
+            Mapper.Map<CostumerDto, Models.Costumer>(costumerDto, costumerInDb);
 
             _context.SaveChanges();
 
