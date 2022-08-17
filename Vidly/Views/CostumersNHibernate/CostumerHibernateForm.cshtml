@@ -38,9 +38,9 @@ else
         @Html.ValidationMessageFor(m => m.Costumer.Name)
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Costumer.MemberShipId)
-        @Html.DropDownListFor(m => m.Costumer.MemberShipId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Select a membership Type", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Costumer.MemberShipId)
+        @Html.LabelFor(m => m.Costumer.MembershipTypeHibernateId)
+        @Html.DropDownListFor(m => m.Costumer.MembershipTypeHibernateId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Select a membership Type", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Costumer.MembershipTypeHibernateId)
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Costumer.BirthDate)
@@ -55,7 +55,7 @@ else
     @Html.HiddenFor(m => m.Costumer.Id);
     @Html.AntiForgeryToken()
     <button type="submit" class="btn btn-primary">Submit</button>
-
+    
     <button class="btn btn-primary " id="buton">
         @Html.ActionLink("Delete", "Delete", "CostumersNHibernate", new { id = Model.Costumer.Id }, new { @class = "white" })
     </button>
