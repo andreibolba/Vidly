@@ -31,18 +31,7 @@ namespace Vidly.DataAccess
             var nhConfig = new Configuration().Configure();
             var mapper = new ConventionModelMapper();
 
-            var mapping = mapper.CompileMappingFor(new[] { typeof(CostumersHibernate), typeof(MembershipTypesHibernate) });
-            
 
-            /*mapper.Class<CostumersHibernate>(rc => {
-                rc.Table("CostumersHibernate");
-                rc.Id(x => x.Id);
-                rc.Property(x => x.Name);
-                rc.Property(x => x.IsSubscribedToNewsletter);
-                rc.Property(x => x.BirthDate);
-                rc.ManyToOne(x => x.MembershipTypeHibernate, x=>x.Column("MembershipTypeHibernateId"));
-            });
-            */
             mapper.BeforeMapManyToOne += (inspector, property, customizer) =>
             {
                 customizer.Column($"{property.LocalMember.Name}Id");
@@ -67,15 +56,7 @@ namespace Vidly.DataAccess
                 customizer.Table($"[{type.Name}]");
             };
 
-            /*mapper.Class<MembershipTypesHibernate>(rc =>
-            {
-                rc.Table("MembershipTypesHibernate");
-                rc.Id(x => x.Id);
-                rc.Property(x => x.Name);
-                rc.Property(x => x.Discount);
-                rc.Property(x => x.DurationInMonth);
-                rc.Property(x => x.SignUpFee);
-            });*/
+            var mapping = mapper.CompileMappingFor(new[] { typeof(CostumersHibernate), typeof(MembershipTypesHibernate) });
             nhConfig.AddMapping(mapping);
             nhConfig.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
             SessionFactory = nhConfig.BuildSessionFactory();
