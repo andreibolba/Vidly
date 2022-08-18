@@ -240,8 +240,13 @@
     <Compile Include="Costumer.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataAccess\HibernateProvider.cs" />
-    <Compile Include="DataAccess\NHibernateHelper.cs" />
+    <Compile Include="DataAccessLayer\EntityFrameworkGenreProvider.cs" />
+    <Compile Include="DataAccessLayer\EntityFrameworkMoviesProvider.cs" />
+    <Compile Include="DataAccessLayer\EntityFrameworkMembershipProvider.cs" />
+    <Compile Include="DataAccessLayer\EntityFrameworkCostumerProvider.cs" />
+    <Compile Include="DataAccessLayer\EntityFrameworkRentalProvider.cs" />
+    <Compile Include="DataAccessLayer\HibernateProvider.cs" />
+    <Compile Include="DataAccessLayer\NHibernateHelper.cs" />
     <Compile Include="Dtos\CostumerDto.cs" />
     <Compile Include="Dtos\GenreDto.cs" />
     <Compile Include="Dtos\MembershipTypeDto.cs" />
@@ -318,7 +323,6 @@
     </Compile>
     <Compile Include="Controllers\CostumersNHibernateController.cs" />
     <Compile Include="NHibernateModels\CostumersHibernate.cs" />
-    <Compile Include="NHibernateModels\HibernateEntity.cs" />
     <Compile Include="NHibernateModels\MembershipTypesHibernate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rental.cs">

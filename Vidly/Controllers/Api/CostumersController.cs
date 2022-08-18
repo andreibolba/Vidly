@@ -9,28 +9,33 @@ using Vidly.Dtos;
 using Vidly.Models;
 using System.Data.Entity;
 using Vidly.Models.IdentityModels;
+using Vidly.DataAccess;
 
 namespace Vidly.Controllers.Api
 {
     public class CostumersController : ApiController
     {
-        public ApplicationDbContext _context;
+        private EntityFrameworkCostumerProvider providerCostumers;
 
         public CostumersController()
         {
-            _context = new ApplicationDbContext();
+            providerCostumers = new EntityFrameworkCostumerProvider();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            providerCostumers.Dispose();
         }
 
         //Get/api/costumers
         public IHttpActionResult GetCostumers(string query = null)
         {
-            var costumerQuey = _context.Customers
-                .Include(c => c.MembershipType);
+            var costumerQuery = providerCostumers.GetCostumersApi();
 
             if (!string.IsNullOrWhiteSpace(query))
-                costumerQuey = costumerQuey.Where(c => c.Name.Contains(query));
+                costumerQuery = costumerQuery.Where(c => c.Name.Contains(query));
 
-            var costumerDtos= costumerQuey
+            var costumerDtos= costumerQuery
                 .ToList()
                 .Select(Mapper.Map<Models.Costumer,CostumerDto>);
             return Ok(costumerDtos);
@@ -38,7 +43,7 @@ namespace Vidly.Controllers.Api
         //Get/api/costumers/1
         public IHttpActionResult GetCostumer(int id)
         {
-            var costumer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            var costumer = providerCostumers.GetCostumer(id);
 
             if (costumer == null)
                 return NotFound();
@@ -51,8 +56,7 @@ namespace Vidly.Controllers.Api
             if (!ModelState.IsValid)
                 return BadRequest();
             var costumer = Mapper.Map<CostumerDto, Models.Costumer>(costumerDto);
-            _context.Customers.Add(costumer);
-            _context.SaveChanges();
+            providerCostumers.AddCostumer(costumer);
 
             costumerDto.Id = costumer.Id;
 
@@ -64,12 +68,11 @@ namespace Vidly.Controllers.Api
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
-            var costumerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
+            var costumerInDb = providerCostumers.GetCostumer(id);
             if (costumerInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             Mapper.Map<CostumerDto, Models.Costumer>(costumerDto, costumerInDb);
 
-            _context.SaveChanges();
 
         }
 
@@ -77,11 +80,10 @@ namespace Vidly.Controllers.Api
         [HttpDelete]
         public void DeleteCostumer(int id)
         {
-            var costumerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
+            var costumerInDb = providerCostumers.GetCostumer(id);
             if (costumerInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
-            _context.Customers.Remove(costumerInDb);
-            _context.SaveChanges();
+            providerCostumers.DeleteCostumers(costumerInDb);
         }
     }
 }

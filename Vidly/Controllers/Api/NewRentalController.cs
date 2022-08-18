@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Vidly.DataAccess;
 using Vidly.Dtos;
 using Vidly.Models.IdentityModels;
 
@@ -11,23 +12,36 @@ namespace Vidly.Controllers.Api
 {
     public class NewRentalController : ApiController
     {
-        public ApplicationDbContext _context;
+        private EntityFrameworkCostumerProvider providerCostumers;
+        private EntityFrameworkMembershipTypeProvider providerMembership;
+        private EntityFrameworkMoviesProvider providerMovies;
+        private EntityFrameworkGenreProvider providerGenre;
+        private EntityFrameworkRentalProvider providerRental;
 
         public NewRentalController()
         {
-            _context = new ApplicationDbContext();
+            providerCostumers = new EntityFrameworkCostumerProvider();
+            providerMembership = new EntityFrameworkMembershipTypeProvider();
+            providerMovies = new EntityFrameworkMoviesProvider();
+            providerGenre = new EntityFrameworkGenreProvider();
+            providerRental = new EntityFrameworkRentalProvider();
         }
+
         protected override void Dispose(bool disposing)
         {
-            _context.Dispose();
+            providerCostumers.Dispose();
+            providerMembership.Dispose();
+            providerMovies.Dispose();
+            providerGenre.Dispose();
+            providerRental.Dispose();
         }
         [HttpPost]
         public IHttpActionResult CreateRental(NewRentalDto newRentalDto)
         {
-            Models.Costumer costumer = _context.Customers.Single(c => c.Id == newRentalDto.CostumerId);
+            Models.Costumer costumer = providerCostumers.GetCostumer(newRentalDto.CostumerId);
             foreach(int id in newRentalDto.MoviesId)
             {
-                Models.Movie movie= _context.Movies.ToList().SingleOrDefault(m=>m.Id==id);
+                Models.Movie movie = providerMovies.GetMovie(id);
                 movie.NumberAvailable--;
                 Models.Rental rental = new Models.Rental()
                 {
@@ -35,9 +49,8 @@ namespace Vidly.Controllers.Api
                     Movie = movie,
                     DateRented=DateTime.Now
                 };
-                _context.Rentals.Add(rental);
+                providerRental.AddRental(rental);
             }
-            _context.SaveChanges();
             return Ok();
         }
     }

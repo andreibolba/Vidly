@@ -8,21 +8,27 @@ using Vidly.Models;
 using Vidly.ViewModel;
 using Vidly.Models.IdentityModels;
 using System.Runtime.Caching;
+using Vidly.DataAccess;
 
 namespace Vidly.Controllers
 {
     public class CostumersController : Controller
     {
-        private ApplicationDbContext _context;
+        private EntityFrameworkCostumerProvider providerCostumers;
+        private EntityFrameworkMembershipTypeProvider providerMembership;
 
         public CostumersController()
         {
-            _context = new ApplicationDbContext();
+            providerCostumers = new EntityFrameworkCostumerProvider();
+            providerMembership = new EntityFrameworkMembershipTypeProvider();
+
         }
 
         protected override void Dispose(bool disposing)
         {
-            _context.Dispose();
+            providerCostumers.Dispose();
+            providerMembership.Dispose();
+
         }
 
         public ActionResult AllCostumers()
@@ -33,8 +39,7 @@ namespace Vidly.Controllers
         [Route("Costumers/GetCostumer/{id}")]
         public ActionResult GetCostumer(int id)
         {
-            var allCostumers = _context.Customers.Include(c => c.MembershipType).ToList();
-            var costumer = allCostumers.SingleOrDefault(c => c.Id == id);
+            var costumer = providerCostumers.GetCostumer(id);
 
             if (costumer == null)
                 return HttpNotFound();
@@ -45,11 +50,6 @@ namespace Vidly.Controllers
         // GET: Costumers
         public ActionResult Index()
         {
-            if (MemoryCache.Default["Genres"] == null)
-            {
-                MemoryCache.Default["Genres"] = _context.Genres.ToList();
-            }
-            var genres = MemoryCache.Default["Genres"] as IEnumerable<Genre>;
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace Vidly.Controllers
         {
             var viewModel = new CostumerFormViewModel()
             {
-                MembershipTypes = _context.MembershipTypes.ToList(),
+                MembershipTypes = providerMembership.GetMembershipTypes().ToList(),
                 Costumer = new Models.Costumer()
             };
             return View("CostumerForm", viewModel);
@@ -70,36 +70,26 @@ namespace Vidly.Controllers
             {
                 var viewModel = new CostumerFormViewModel()
                 {
-                    MembershipTypes = _context.MembershipTypes.ToList(),
+                    MembershipTypes = providerMembership.GetMembershipTypes().ToList(),
                     Costumer = costumer
                 };
                 return View("CostumerForm", viewModel);
             }
-            if (costumer.Id==0)
-            _context.Customers.Add(costumer);
+            if (costumer.Id == 0)
+                providerCostumers.AddCostumer(costumer);
             else
-            {
-                var costumerInDB = _context.Customers.Single(c => c.Id == costumer.Id);
-
-                //Mapper.Map(costumer,costumerInDb)
-
-                costumerInDB.Name = costumer.Name;
-                costumerInDB.BirthDate = costumer.BirthDate;
-                costumerInDB.MembershipTypeId = costumer.MembershipTypeId;
-                costumerInDB.IsSubscribedToNewsletter = costumer.IsSubscribedToNewsletter;
-            }
-            _context.SaveChanges();
+                providerCostumers.UpdateCostumer(costumer);
             return RedirectToAction("AllCostumers", "Costumers");
         }
 
         public ActionResult Edit(int id)
         {
-            var costumer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            var costumer = providerCostumers.GetCostumer(id);
             if (costumer == null)
                 costumer = new Models.Costumer();
             var viewModel = new CostumerFormViewModel()
             {
-                MembershipTypes = _context.MembershipTypes.ToList(),
+                MembershipTypes = providerMembership.GetMembershipTypes().ToList(),
                 Costumer = costumer
             };
             return View("CostumerForm",viewModel);
