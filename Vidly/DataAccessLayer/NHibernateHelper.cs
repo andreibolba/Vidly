@@ -31,9 +31,10 @@ namespace Vidly.DataAccess
             var nhConfig = new Configuration().Configure();
             var mapper = new ConventionModelMapper();
 
-            //var mapping = mapper.CompileMappingFor(new[] { typeof(CostumersHibernate), typeof(MembershipTypesHibernate) });
+            var mapping = mapper.CompileMappingFor(new[] { typeof(CostumersHibernate), typeof(MembershipTypesHibernate) });
+            
 
-            mapper.Class<CostumersHibernate>(rc => {
+            /*mapper.Class<CostumersHibernate>(rc => {
                 rc.Table("CostumersHibernate");
                 rc.Id(x => x.Id);
                 rc.Property(x => x.Name);
@@ -41,10 +42,10 @@ namespace Vidly.DataAccess
                 rc.Property(x => x.BirthDate);
                 rc.ManyToOne(x => x.MembershipTypeHibernate, x=>x.Column("MembershipTypeHibernateId"));
             });
-
+            */
             mapper.BeforeMapManyToOne += (inspector, property, customizer) =>
             {
-                customizer.Column($"{property.LocalMember.Name}");
+                customizer.Column($"{property.LocalMember.Name}Id");
                 customizer.Lazy(LazyRelation.NoLazy);
                 customizer.Insert(false);
                 customizer.Update(false);
@@ -66,7 +67,7 @@ namespace Vidly.DataAccess
                 customizer.Table($"[{type.Name}]");
             };
 
-            mapper.Class<MembershipTypesHibernate>(rc =>
+            /*mapper.Class<MembershipTypesHibernate>(rc =>
             {
                 rc.Table("MembershipTypesHibernate");
                 rc.Id(x => x.Id);
@@ -74,8 +75,8 @@ namespace Vidly.DataAccess
                 rc.Property(x => x.Discount);
                 rc.Property(x => x.DurationInMonth);
                 rc.Property(x => x.SignUpFee);
-            });
-            //nhConfig.AddMapping(mapping);
+            });*/
+            nhConfig.AddMapping(mapping);
             nhConfig.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
             SessionFactory = nhConfig.BuildSessionFactory();
         }
