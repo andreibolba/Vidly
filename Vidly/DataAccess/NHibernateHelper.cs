@@ -49,6 +49,7 @@ namespace Vidly.DataAccess
                 customizer.Insert(false);
                 customizer.Update(false);
             };
+
             mapper.BeforeMapClass += (inspector, type, customizer) =>
             {
                 customizer.Id(cMapper => cMapper.Generator(

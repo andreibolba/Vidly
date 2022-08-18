@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Vidly.NHibernateModels
 {
-    public class MembershipTypesHibernate
+    public class MembershipTypesHibernate:HibernateEntity
     {
         public virtual int Id { get; set; }
         public virtual string Name { get; set; }

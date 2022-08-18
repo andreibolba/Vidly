@@ -13,13 +13,11 @@ namespace Vidly.Controllers
 {
     public class CostumersNHibernateController : Controller
     {
-        private ISession session;
-        private ITransaction transaction;
+        private HibernateProvider provider;
 
         public CostumersNHibernateController()
         {
-            session = NHibernateHelper.OpenSession();
-            transaction = session.BeginTransaction();
+            provider = new HibernateProvider();
         }
 
         public ActionResult AllCostumersHibernate()
@@ -29,7 +27,7 @@ namespace Vidly.Controllers
                 CanManage = true;
             var viewModel = new CostumerHibernateFormViewModel()
             {
-                Costumers = session.CreateCriteria<CostumersHibernate>().List<CostumersHibernate>().ToList(),
+                Costumers = provider.GetAllElements<CostumersHibernate>().ToList(),
                 CanManageCostumers = CanManage
             };
             return View(viewModel);
@@ -37,14 +35,14 @@ namespace Vidly.Controllers
 
         public ActionResult Edit(int id)
         {
-            var costumer = session.Get<CostumersHibernate>(id);
+            var costumer = provider.GetElement<CostumersHibernate>(id);
             if (costumer == null)
                 costumer = new NHibernateModels.CostumersHibernate();
             else
                 costumer.MembershipTypeHibernateId = costumer.MembershipTypeHibernate.Id;
             var viewModel = new CostumerHibernateFormViewModel()
             {
-                MembershipTypes = session.CreateCriteria<MembershipTypesHibernate>().List<MembershipTypesHibernate>().ToList(),
+                MembershipTypes = provider.GetAllElements<MembershipTypesHibernate>().ToList(),
                 Costumer = costumer
             };
             if (User.IsInRole(RoleName.CanManagerMovies))
@@ -59,30 +57,23 @@ namespace Vidly.Controllers
             {
                 var viewModel = new CostumerHibernateFormViewModel()
                 {
-                    MembershipTypes = session.CreateCriteria<MembershipTypesHibernate>().List<MembershipTypesHibernate>().ToList(),
+                    MembershipTypes = provider.GetAllElements<MembershipTypesHibernate>().ToList(),
                     Costumer = costumer
                 };
                 return View("CostumerHibernateForm", viewModel);
             }
-            costumer.MembershipTypeHibernate = session.Get<MembershipTypesHibernate>(costumer.MembershipTypeHibernateId);
+            costumer.MembershipTypeHibernate = provider.GetElement<MembershipTypesHibernate>(costumer.MembershipTypeHibernateId);
             if (costumer.Id == 0)
-            {
-                session.Save(costumer);
-            }
+                provider.Add(costumer);
             else
-            {
-                session.Update(costumer);
-            }
-            transaction.Commit();
+                provider.Update(costumer);
             return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
         }
 
         public ActionResult Delete(int id)
         {
-            var costumer = session.Get<CostumersHibernate>(id);
-            session.Delete(costumer);
-
-            transaction.Commit();
+            var costumer = provider.GetElement<CostumersHibernate>(id);
+            provider.Delete(costumer);
             return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
         }
     }
