@@ -54,9 +54,10 @@ namespace Vidly.DataAccess
             _context.SaveChanges();
         }
 
-        public void DeleteCostumers(Models.Costumer costumer)
+        public void DeleteCostumers(int id)
         {
-            _context.Customers.Remove(costumer);
+            var c = GetCostumer(id);
+            _context.Customers.Remove(c);
             _context.SaveChanges();
         }
     }

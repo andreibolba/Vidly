@@ -87,7 +87,7 @@ namespace Vidly.Controllers.Api
                 var costumerInDb = c.Resolve<EntityFrameworkCostumerProvider>().GetCostumer(id);
                 if (costumerInDb == null)
                     throw new HttpResponseException(HttpStatusCode.NotFound);
-                c.Resolve<EntityFrameworkCostumerProvider>().DeleteCostumers(costumerInDb);
+                c.Resolve<EntityFrameworkCostumerProvider>().DeleteCostumers(id);
             }
         }
     }

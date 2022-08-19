@@ -55,9 +55,10 @@ namespace Vidly.DataAccess
             _context.SaveChanges();
         }
 
-        public void DeleteMovies(Models.Movie movie)
+        public void DeleteMovies(int id)
         {
-            _context.Movies.Remove(movie);
+            var m = GetMovie(id);
+            _context.Movies.Remove(m);
             _context.SaveChanges();
         }
     }

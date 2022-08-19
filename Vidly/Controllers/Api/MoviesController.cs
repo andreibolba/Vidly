@@ -87,7 +87,7 @@ namespace Vidly.Controllers.Api
                     var movie = c.Resolve<EntityFrameworkMoviesProvider>().GetMovie(id);
                     if (movie == null)
                         throw new HttpResponseException(HttpStatusCode.NotFound);
-                    c.Resolve<EntityFrameworkMoviesProvider>().DeleteMovies(movie);
+                    c.Resolve<EntityFrameworkMoviesProvider>().DeleteMovies(id);
                 }
             }
         }
