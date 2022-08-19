@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Autofac;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Vidly.DataAccess;
+using Vidly.DataAccessLayer;
 using Vidly.Models;
 using Vidly.Models.IdentityModels;
 using Vidly.ViewModel;
@@ -13,19 +15,11 @@ namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        private EntityFrameworkMoviesProvider providerMovies;
-        private EntityFrameworkGenreProvider providerGenre;
+        private ConfigAutofac builder;
 
         public MoviesController()
         {
-            providerMovies = new EntityFrameworkMoviesProvider();
-            providerGenre = new EntityFrameworkGenreProvider();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            providerMovies.Dispose();
-            providerGenre.Dispose();
+            builder = new ConfigAutofac();
         }
 
         public ActionResult AllMovies()
@@ -37,10 +31,13 @@ namespace Vidly.Controllers
         [Route("Movie/GetMovie/{id}")]
         public ActionResult GetMovie(int id)
         {
-            var movie = providerMovies.GetMovie(id);
-            if (User.IsInRole(RoleName.CanManagerMovies))
-                return View("GetMovie",movie);
-            return View("GetMovieReadOnly", movie);
+            using (var c = builder.builder.Build())
+            {
+                var movie = c.Resolve<EntityFrameworkMoviesProvider>().GetMovie(id);
+                if (User.IsInRole(RoleName.CanManagerMovies))
+                    return View("GetMovie", movie);
+                return View("GetMovieReadOnly", movie);
+            }
         }
 
         // GET: Movie
@@ -81,43 +78,49 @@ namespace Vidly.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Save(Movie movie)
         {
-            if (movie.Id == 0)
+            using (var c = builder.builder.Build())
             {
-                movie.Added = DateTime.Now;
-                movie.NumberAvailable = movie.Stock;
-                providerMovies.AddMovie(movie);
+                if (movie.Id == 0)
+                {
+                    movie.Added = DateTime.Now;
+                    movie.NumberAvailable = movie.Stock;
+                    c.Resolve<EntityFrameworkMoviesProvider>().AddMovie(movie);
+                }
+                else
+                    c.Resolve<EntityFrameworkMoviesProvider>().UpdateMovie(movie);
+                return RedirectToAction("AllMovies", "Movies");
             }
-            else
-                providerMovies.UpdateMovie(movie);
-            return RedirectToAction("AllMovies", "Movies");
         }
 
         public ActionResult Edit(int id)
         {
-            var movie = providerMovies.GetMovie(id);
-            if (movie == null)
+            using (var c = builder.builder.Build())
             {
-                var viewModel = new MoviesFormViewModel()
+                var movie = c.Resolve<EntityFrameworkMoviesProvider>().GetMovie(id);
+                if (movie == null)
                 {
-                    Genres = providerGenre.GetGenres().ToList(),
-                    Title="New movie"
-                };
-                if(User.IsInRole(RoleName.CanManagerMovies))
-                    return View("MoviesForm", viewModel);
-                return Content("not authorized");
-            }
-            else
-            {
-                var viewModel = new MoviesFormViewModel(providerGenre.GetGenres().ToList(),movie)
-                {
-                    Title = "See movie"
-                };
-                if (User.IsInRole(RoleName.CanManagerMovies))
-                {
-                    viewModel.Title = "Edit movie";
-                    return View("MoviesForm", viewModel);
+                    var viewModel = new MoviesFormViewModel()
+                    {
+                        Genres = c.Resolve<EntityFrameworkGenreProvider>().GetGenres().ToList(),
+                        Title = "New movie"
+                    };
+                    if (User.IsInRole(RoleName.CanManagerMovies))
+                        return View("MoviesForm", viewModel);
+                    return Content("not authorized");
                 }
-                return View("MoviesFormReadOnly", viewModel);
+                else
+                {
+                    var viewModel = new MoviesFormViewModel(c.Resolve<EntityFrameworkGenreProvider>().GetGenres().ToList(), movie)
+                    {
+                        Title = "See movie"
+                    };
+                    if (User.IsInRole(RoleName.CanManagerMovies))
+                    {
+                        viewModel.Title = "Edit movie";
+                        return View("MoviesForm", viewModel);
+                    }
+                    return View("MoviesFormReadOnly", viewModel);
+                }
             }
         }
     }
