@@ -9,25 +9,18 @@ using Vidly.ViewModel;
 using Vidly.Models.IdentityModels;
 using System.Runtime.Caching;
 using Vidly.DataAccess;
+using Autofac;
+using Vidly.DataAccessLayer;
 
 namespace Vidly.Controllers
 {
     public class CostumersController : Controller
     {
-        private EntityFrameworkCostumerProvider providerCostumers;
-        private EntityFrameworkMembershipTypeProvider providerMembership;
+        private ConfigAutofac builder;
 
         public CostumersController()
         {
-            providerCostumers = new EntityFrameworkCostumerProvider();
-            providerMembership = new EntityFrameworkMembershipTypeProvider();
-
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            providerCostumers.Dispose();
-            providerMembership.Dispose();
+            builder = new ConfigAutofac();
 
         }
 
@@ -39,12 +32,15 @@ namespace Vidly.Controllers
         [Route("Costumers/GetCostumer/{id}")]
         public ActionResult GetCostumer(int id)
         {
-            var costumer = providerCostumers.GetCostumer(id);
+            using (var c = builder.builder.Build())
+            {
+                var costumer = c.Resolve<EntityFrameworkCostumerProvider>().GetCostumer(id);
 
-            if (costumer == null)
-                return HttpNotFound();
+                if (costumer == null)
+                    return HttpNotFound();
 
-            return View(costumer);
+                return View(costumer);
+            }
         }
 
         // GET: Costumers
@@ -55,44 +51,53 @@ namespace Vidly.Controllers
 
         public ActionResult New()
         {
-            var viewModel = new CostumerFormViewModel()
+            using (var c = builder.builder.Build())
             {
-                MembershipTypes = providerMembership.GetMembershipTypes().ToList(),
-                Costumer = new Models.Costumer()
-            };
-            return View("CostumerForm", viewModel);
+                var viewModel = new CostumerFormViewModel()
+                {
+                    MembershipTypes = c.Resolve<EntityFrameworkMembershipTypeProvider>().GetMembershipTypes().ToList(),
+                    Costumer = new Models.Costumer()
+                };
+                return View("CostumerForm", viewModel);
+            }
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Save(Models.Costumer costumer)
         {
-            if (!ModelState.IsValid)
+            using (var c = builder.builder.Build())
             {
-                var viewModel = new CostumerFormViewModel()
+                if (!ModelState.IsValid)
                 {
-                    MembershipTypes = providerMembership.GetMembershipTypes().ToList(),
-                    Costumer = costumer
-                };
-                return View("CostumerForm", viewModel);
+                    var viewModel = new CostumerFormViewModel()
+                    {
+                        MembershipTypes = c.Resolve<EntityFrameworkMembershipTypeProvider>().GetMembershipTypes().ToList(),
+                        Costumer = costumer
+                    };
+                    return View("CostumerForm", viewModel);
+                }
+                if (costumer.Id == 0)
+                    c.Resolve<EntityFrameworkCostumerProvider>().AddCostumer(costumer);
+                else
+                    c.Resolve<EntityFrameworkCostumerProvider>().UpdateCostumer(costumer);
+                return RedirectToAction("AllCostumers", "Costumers");
             }
-            if (costumer.Id == 0)
-                providerCostumers.AddCostumer(costumer);
-            else
-                providerCostumers.UpdateCostumer(costumer);
-            return RedirectToAction("AllCostumers", "Costumers");
         }
 
         public ActionResult Edit(int id)
         {
-            var costumer = providerCostumers.GetCostumer(id);
-            if (costumer == null)
-                costumer = new Models.Costumer();
-            var viewModel = new CostumerFormViewModel()
+            using (var c = builder.builder.Build())
             {
-                MembershipTypes = providerMembership.GetMembershipTypes().ToList(),
-                Costumer = costumer
-            };
-            return View("CostumerForm",viewModel);
+                var costumer = c.Resolve<EntityFrameworkCostumerProvider>().GetCostumer(id);
+                if (costumer == null)
+                    costumer = new Models.Costumer();
+                var viewModel = new CostumerFormViewModel()
+                {
+                    MembershipTypes = c.Resolve<EntityFrameworkMembershipTypeProvider>().GetMembershipTypes().ToList(),
+                    Costumer = costumer
+                };
+                return View("CostumerForm", viewModel);
+            }
         }
     }
 }

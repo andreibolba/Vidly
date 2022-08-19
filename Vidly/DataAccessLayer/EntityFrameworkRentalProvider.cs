@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Vidly.Models.IdentityModels;
+using Vidly.DataAccessLayer;
 
 namespace Vidly.DataAccess
 {
@@ -24,5 +25,6 @@ namespace Vidly.DataAccess
             _context.Rentals.Add(rental);
             _context.SaveChanges();
         }
+
     }
 }
