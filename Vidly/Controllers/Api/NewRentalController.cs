@@ -1,57 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using Autofac;
+using System;
 using System.Web.Http;
+using Vidly.DataAccessLayer;
 using Vidly.DataAccess;
 using Vidly.Dtos;
-using Vidly.Models.IdentityModels;
 
 namespace Vidly.Controllers.Api
 {
     public class NewRentalController : ApiController
     {
-        private EntityFrameworkCostumerProvider providerCostumers;
-        private EntityFrameworkMembershipTypeProvider providerMembership;
-        private EntityFrameworkMoviesProvider providerMovies;
-        private EntityFrameworkGenreProvider providerGenre;
-        private EntityFrameworkRentalProvider providerRental;
+        private ConfigAutofac builder;
 
         public NewRentalController()
         {
-            providerCostumers = new EntityFrameworkCostumerProvider();
-            providerMembership = new EntityFrameworkMembershipTypeProvider();
-            providerMovies = new EntityFrameworkMoviesProvider();
-            providerGenre = new EntityFrameworkGenreProvider();
-            providerRental = new EntityFrameworkRentalProvider();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            providerCostumers.Dispose();
-            providerMembership.Dispose();
-            providerMovies.Dispose();
-            providerGenre.Dispose();
-            providerRental.Dispose();
+            builder = new ConfigAutofac();
         }
         [HttpPost]
         public IHttpActionResult CreateRental(NewRentalDto newRentalDto)
         {
-            Models.Costumer costumer = providerCostumers.GetCostumer(newRentalDto.CostumerId);
-            foreach(int id in newRentalDto.MoviesId)
+            using (var c = builder.builder.Build())
             {
-                Models.Movie movie = providerMovies.GetMovie(id);
-                movie.NumberAvailable--;
-                Models.Rental rental = new Models.Rental()
+                Models.Costumer costumer = c.Resolve<EntityFrameworkCostumerProvider>().GetCostumer(newRentalDto.CostumerId);
+                foreach (int id in newRentalDto.MoviesId)
                 {
-                    Costumer = costumer,
-                    Movie = movie,
-                    DateRented=DateTime.Now
-                };
-                providerRental.AddRental(rental);
+                    Models.Movie movie = c.Resolve<EntityFrameworkMoviesProvider>().GetMovie(id);
+                    movie.NumberAvailable--;
+                    Models.Rental rental = new Models.Rental()
+                    {
+                        Costumer = costumer,
+                        Movie = movie,
+                        DateRented = DateTime.Now
+                    };
+                    c.Resolve<EntityFrameworkRentalProvider>().AddRental(rental);
+                }
+                return Ok();
             }
-            return Ok();
         }
     }
 }

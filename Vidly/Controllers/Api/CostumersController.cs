@@ -1,77 +1,80 @@
 ﻿using AutoMapper;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using Vidly.Dtos;
-using Vidly.Models;
-using System.Data.Entity;
-using Vidly.Models.IdentityModels;
 using Vidly.DataAccess;
+using Vidly.DataAccessLayer;
+using Autofac;
 
 namespace Vidly.Controllers.Api
 {
     public class CostumersController : ApiController
     {
-        private EntityFrameworkCostumerProvider providerCostumers;
+        private ConfigAutofac builder;
 
         public CostumersController()
         {
-            providerCostumers = new EntityFrameworkCostumerProvider();
+            builder = new ConfigAutofac();
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            providerCostumers.Dispose();
-        }
-
         //Get/api/costumers
         public IHttpActionResult GetCostumers(string query = null)
         {
-            var costumerQuery = providerCostumers.GetCostumersApi();
+            using (var x = builder.builder.Build())
+            {
+                var costumerQuery = x.Resolve<EntityFrameworkCostumerProvider>().GetCostumersApi();
 
-            if (!string.IsNullOrWhiteSpace(query))
-                costumerQuery = costumerQuery.Where(c => c.Name.Contains(query));
+                if (!string.IsNullOrWhiteSpace(query))
+                    costumerQuery = costumerQuery.Where(c => c.Name.Contains(query));
 
-            var costumerDtos= costumerQuery
-                .ToList()
-                .Select(Mapper.Map<Models.Costumer,CostumerDto>);
-            return Ok(costumerDtos);
+                var costumerDtos = costumerQuery
+                    .ToList()
+                    .Select(Mapper.Map<Models.Costumer, CostumerDto>);
+                return Ok(costumerDtos);
+            }
         }
         //Get/api/costumers/1
         public IHttpActionResult GetCostumer(int id)
         {
-            var costumer = providerCostumers.GetCostumer(id);
+            using (var c = builder.builder.Build())
+            {
+                var costumer = c.Resolve<EntityFrameworkCostumerProvider>().GetCostumer(id);
 
-            if (costumer == null)
-                return NotFound();
-            return Ok(Mapper.Map<Models.Costumer,CostumerDto>(costumer));
+                if (costumer == null)
+                    return NotFound();
+                return Ok(Mapper.Map<Models.Costumer, CostumerDto>(costumer));
+            }
         }
         //POST/api/costumers
         [HttpPost]
         public IHttpActionResult CreateCostumer(CostumerDto costumerDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-            var costumer = Mapper.Map<CostumerDto, Models.Costumer>(costumerDto);
-            providerCostumers.AddCostumer(costumer);
+            using (var c = builder.builder.Build())
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
+                var costumer = Mapper.Map<CostumerDto, Models.Costumer>(costumerDto);
+                c.Resolve<EntityFrameworkCostumerProvider>().AddCostumer(costumer);
 
-            costumerDto.Id = costumer.Id;
+                costumerDto.Id = costumer.Id;
 
-            return Created(new Uri(Request.RequestUri+"/"+costumer.Id),costumerDto);
+                return Created(new Uri(Request.RequestUri + "/" + costumer.Id), costumerDto);
+            }
         }
         //PUT/api/customers/1
         [HttpPut]
-        public void UpdateCostumerUpdateCostumer(int id,CostumerDto costumerDto)
+        public void UpdateCostumer(int id,CostumerDto costumerDto)
         {
-            if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
-            var costumerInDb = providerCostumers.GetCostumer(id);
-            if (costumerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-            Mapper.Map<CostumerDto, Models.Costumer>(costumerDto, costumerInDb);
+            using (var c = builder.builder.Build())
+            {
+                if (!ModelState.IsValid)
+                    throw new HttpResponseException(HttpStatusCode.BadRequest);
+                var costumerInDb = c.Resolve<EntityFrameworkCostumerProvider>().GetCostumer(id);
+                if (costumerInDb == null)
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                Mapper.Map<CostumerDto, Models.Costumer>(costumerDto, costumerInDb);
+            }
 
 
         }
@@ -80,10 +83,12 @@ namespace Vidly.Controllers.Api
         [HttpDelete]
         public void DeleteCostumer(int id)
         {
-            var costumerInDb = providerCostumers.GetCostumer(id);
-            if (costumerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-            providerCostumers.DeleteCostumers(costumerInDb);
+            using (var c = builder.builder.Build()) {
+                var costumerInDb = c.Resolve<EntityFrameworkCostumerProvider>().GetCostumer(id);
+                if (costumerInDb == null)
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                c.Resolve<EntityFrameworkCostumerProvider>().DeleteCostumers(costumerInDb);
+            }
         }
     }
 }

@@ -87,7 +87,11 @@ namespace Vidly.Controllers
                     c.Resolve<EntityFrameworkMoviesProvider>().AddMovie(movie);
                 }
                 else
+                {
+                    var movieFromDb = c.Resolve<EntityFrameworkMoviesProvider>().GetMovie(movie.Id);
+                    movie.Added = movieFromDb.Added;
                     c.Resolve<EntityFrameworkMoviesProvider>().UpdateMovie(movie);
+                }
                 return RedirectToAction("AllMovies", "Movies");
             }
         }
