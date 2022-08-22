@@ -20,9 +20,9 @@ namespace Vidly
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            ConfigAutofac builder = new ConfigAutofac();
-            builder.builder.RegisterControllers(typeof(MvcApplication).Assembly);
-            IContainer container = builder.builder.Build();
+            ConfigAutofac config = new ConfigAutofac();
+            config.Builder.RegisterControllers(typeof(MvcApplication).Assembly);
+            IContainer container = config.Builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
     }

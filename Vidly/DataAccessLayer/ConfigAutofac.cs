@@ -5,17 +5,17 @@ namespace Vidly.DataAccessLayer
 {
     public class ConfigAutofac
     {
-        public ContainerBuilder builder;
+        public ContainerBuilder Builder;
 
         public ConfigAutofac()
         {
-            builder = new ContainerBuilder();
-            builder.RegisterType<HibernateProvider>();
-            builder.RegisterType<EntityFrameworkCostumerProvider>();
-            builder.RegisterType<EntityFrameworkGenreProvider>();
-            builder.RegisterType<EntityFrameworkMembershipTypeProvider>();
-            builder.RegisterType<EntityFrameworkMoviesProvider>();
-            builder.RegisterType<EntityFrameworkRentalProvider>();
+            Builder = new ContainerBuilder();
+            Builder.RegisterType<HibernateProvider>();
+            Builder.RegisterType<EntityFrameworkCostumerProvider>();
+            Builder.RegisterType<EntityFrameworkGenreProvider>();
+            Builder.RegisterType<EntityFrameworkMembershipTypeProvider>();
+            Builder.RegisterType<EntityFrameworkMoviesProvider>();
+            Builder.RegisterType<EntityFrameworkRentalProvider>();
         }
     }
 }
