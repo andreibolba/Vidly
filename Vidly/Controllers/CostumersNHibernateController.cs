@@ -36,72 +36,52 @@ namespace Vidly.Controllers
             return View(viewModel);
         }
 
-        /*public ActionResult AllCostumersHibernate()
-        {
-            using (var c = builder.builder.Build())
-            {
-                bool CanManage = false;
-                if (User.IsInRole(RoleName.CanManagerMovies))
-                    CanManage = true;
-                var viewModel = new CostumerHibernateFormViewModel()
-                {
-                    Costumers = c.Resolve<HibernateProvider>().GetAllElements<CostumersHibernate>().ToList(),
-                    CanManageCostumers = CanManage
-                };
-                return View(viewModel);
-            }
-        }*/
         public ActionResult Edit(int id)
         {
-            using (var c = builder.builder.Build())
+            var costumer = hibernateProvider.GetElement<CostumersHibernate>(id);
+            if (costumer == null)
+                costumer = new CostumersHibernate();
+            else
+                costumer.MembershipTypeHibernateId = costumer.MembershipTypeHibernate.Id;
+            var viewModel = new CostumerHibernateFormViewModel()
             {
-                var costumer = c.Resolve<HibernateProvider>().GetElement<CostumersHibernate>(id);
-                if (costumer == null)
-                    costumer = new CostumersHibernate();
-                else
-                    costumer.MembershipTypeHibernateId = costumer.MembershipTypeHibernate.Id;
-                var viewModel = new CostumerHibernateFormViewModel()
-                {
-                    MembershipTypes = c.Resolve<HibernateProvider>().GetAllElements<MembershipTypesHibernate>().ToList(),
-                    Costumer = costumer
-                };
-                if (User.IsInRole(RoleName.CanManagerMovies))
-                    return View("CostumerHibernateForm", viewModel);
-                return View("CostumerHibernateRForm", viewModel.Costumer);
-            }
+                MembershipTypes = hibernateProvider.GetAllElements<MembershipTypesHibernate>().ToList(),
+                Costumer = costumer
+            };
+            if (User.IsInRole(RoleName.CanManagerMovies))
+                return View("CostumerHibernateForm", viewModel);
+            return View("CostumerHibernateRForm", viewModel.Costumer);
+
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Save(CostumersHibernate costumer)
         {
-            using (var c = builder.builder.Build())
+
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
+                var viewModel = new CostumerHibernateFormViewModel()
                 {
-                    var viewModel = new CostumerHibernateFormViewModel()
-                    {
-                        MembershipTypes = c.Resolve<HibernateProvider>().GetAllElements<MembershipTypesHibernate>().ToList(),
-                        Costumer = costumer
-                    };
-                    return View("CostumerHibernateForm", viewModel);
-                }
-                costumer.MembershipTypeHibernate = c.Resolve<HibernateProvider>().GetElement<MembershipTypesHibernate>(costumer.MembershipTypeHibernateId);
-                if (costumer.Id == 0)
-                    c.Resolve<HibernateProvider>().Add(costumer);
-                else
-                    c.Resolve<HibernateProvider>().Update(costumer);
-                return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
+                    MembershipTypes = hibernateProvider.GetAllElements<MembershipTypesHibernate>().ToList(),
+                    Costumer = costumer
+                };
+                return View("CostumerHibernateForm", viewModel);
             }
+            costumer.MembershipTypeHibernate = hibernateProvider.GetElement<MembershipTypesHibernate>(costumer.MembershipTypeHibernateId);
+            if (costumer.Id == 0)
+                hibernateProvider.Add(costumer);
+            else
+                hibernateProvider.Update(costumer);
+            return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
+
         }
 
         public ActionResult Delete(int id)
         {
-            using (var c = builder.builder.Build())
-            {
-                var costumer = c.Resolve<HibernateProvider>().GetElement<CostumersHibernate>(id);
-                c.Resolve<HibernateProvider>().Delete(costumer);
-                return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
-            }
+            var costumer = c.Resolve<HibernateProvider>().GetElement<CostumersHibernate>(id);
+            hibernateProvider.Delete(costumer);
+            return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
+
         }
     }
 }
