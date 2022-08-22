@@ -16,13 +16,27 @@ namespace Vidly.Controllers
     public class CostumersNHibernateController : Controller
     {
         private ConfigAutofac builder;
+        private readonly HibernateProvider hibernateProvider;
 
-        public CostumersNHibernateController()
+        public CostumersNHibernateController(HibernateProvider hibernateProvider)
         {
-            builder = new ConfigAutofac();
+            this.hibernateProvider = hibernateProvider;
         }
 
         public ActionResult AllCostumersHibernate()
+        {
+            bool CanManage = false;
+            if (User.IsInRole(RoleName.CanManagerMovies))
+                CanManage = true;
+            var viewModel = new CostumerHibernateFormViewModel()
+            {
+                Costumers = hibernateProvider.GetAllElements<CostumersHibernate>().ToList(),
+                CanManageCostumers = CanManage
+            };
+            return View(viewModel);
+        }
+
+        /*public ActionResult AllCostumersHibernate()
         {
             using (var c = builder.builder.Build())
             {
@@ -36,8 +50,7 @@ namespace Vidly.Controllers
                 };
                 return View(viewModel);
             }
-        }
-
+        }*/
         public ActionResult Edit(int id)
         {
             using (var c = builder.builder.Build())
