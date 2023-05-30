@@ -21,8 +21,8 @@ namespace Vidly
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             ConfigAutofac config = new ConfigAutofac();
-            config.Builder.RegisterControllers(typeof(MvcApplication).Assembly);
-            IContainer container = config.Builder.Build();
+            config.builder.RegisterControllers(typeof(MvcApplication).Assembly);
+            IContainer container = config.builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
     }

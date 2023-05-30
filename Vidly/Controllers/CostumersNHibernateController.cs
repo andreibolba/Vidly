@@ -78,7 +78,7 @@ namespace Vidly.Controllers
 
         public ActionResult Delete(int id)
         {
-            var costumer = c.Resolve<HibernateProvider>().GetElement<CostumersHibernate>(id);
+            var costumer = hibernateProvider.GetElement<CostumersHibernate>(id);
             hibernateProvider.Delete(costumer);
             return RedirectToAction("AllCostumersHibernate", "CostumersNHibernate");
 
